@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Installeer MySQL
+      apt:
+        name: mysql-server
+        state: present
+
+    - name: Zorg dat MySQL draait
+      service:
+        name: mysql
+        state: started
+        enabled: true
+

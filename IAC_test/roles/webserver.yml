@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Installeer Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Zorg dat Apache draait
+      service:
+        name: apache2
+        state: started
+        enabled: true
+

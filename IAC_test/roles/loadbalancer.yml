@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Installeer HAProxy
+      apt:
+        name: haproxy
+        state: present
+
+    - name: Zorg dat HAProxy draait
+      service:
+        name: haproxy
+        state: started
+        enabled: true
+
