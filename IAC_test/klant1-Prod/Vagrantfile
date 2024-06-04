@@ -1,0 +1,34 @@
+
+role = "Loadbalancer"
+Vagrant.configure("2") do |config|
+ 
+  subnet = case role
+           when "Webserver" then "192.168.2"
+           when "Databaseserver" then "192.168.3"
+           when "Loadbalancer" then "192.168.4"
+           end
+
+  i = 0
+  vm_name = "klant1-Loadbalancer#{i+1}-Prod" 
+  ip = 5
+  vm_ip = "#{subnet}.#{ip+1}"
+
+  config.vm.define vm_name do |server|
+    server.vm.box = "ubuntu/bionic64"
+    server.vm.hostname = vm_name
+    server.vm.network "private_network", ip: vm_ip
+    server.ssh.insert_key = false
+    server.vm.provision "file", source: "~/.ssh/klantkeys/klant1/klant1_rsa.pub", destination: "~/.ssh/authorized_keys"
+      server.ssh.private_key_path = ["~/.ssh/klantkeys/klant1/klant1_rsa", "~/.vagrant.d/insecure_private_key"]
+    server.vm.provider "virtualbox" do |vb|
+      vb.name = vm_name
+      vb.memory = "1024"
+    end
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "loadbalancer.yml"
+    end
+  end
+end
+
+
+
